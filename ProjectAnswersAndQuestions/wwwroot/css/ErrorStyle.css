@@ -1,0 +1,7 @@
+﻿.error .form-input {
+    border-color:red;
+}
+.errorLabel{
+    display:block;
+    color:red;
+}

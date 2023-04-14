@@ -1,0 +1,1000 @@
+﻿@using ProjectAnswersAndQuestions.DAL.Interfaces
+@using ProjectAnswersAndQuestions.Models;
+@using ProjectAnswersAndQuestions.Services;
+@model AQpageModel;
+
+@{
+    Layout = "~/Views/Shared/_LayoutAQpage.cshtml";
+}
+@{
+    ViewData["Title"] = "AQpage Page";
+}
+
+@*<link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>*@
+
+<div style=" width: 100%; position:sticky;" id="myHeader2">
+    <div id='stars'></div>
+    <div id='stars2'></div>
+    <div id='stars3'></div>
+</div>
+<div class="animTop HeadContainer" id="myHeader">   
+        <div class="HeadContainer2">
+            <div class="HeadContent">
+                <header>
+                    <nav>
+                        <div class="hamburger-menu">
+                            <input id="menu__toggle" type="checkbox" />
+                            <label class="menu__btn" for="menu__toggle">
+                                <span class="menu__btnSpan"></span>
+                                <span class="menu__btnSpan"></span>
+                                <span class="menu__btnSpan"></span>
+                            </label>
+                            <ul class="menu__box">
+                                <li><a asp-controller="AQpage" asp-action="AQpage" class="menu__item">Home</a></li>
+                                <li><a asp-controller="AboutPage" asp-action="AboutPage" class="menu__item">About</a></li>
+                                <li><a asp-controller="Contactpage" asp-action="ContactPage" class="menu__item">Contact</a></li>
+                                <li><a asp-controller="AdminPage" asp-action="AdminPage" class="menu__item">For Admin</a></li>
+                                @if (User.Identity.IsAuthenticated && Model.Users.Count() >= 5)
+                                {
+                                    @if (Model.AQuser.RoleID == 1)
+                                    {
+                                        <li><a asp-controller="Analytics" asp-action="Analytics" class="menu__item">Analytics</a></li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                        @if (!User.Identity.IsAuthenticated || Model.AQuser == null)
+                        {
+                            <form asp-action="Login" asp-controller="User" method="get">
+                                <button asp-action="Login" class="ButtonMainStyleLOGIN">Log in</button>
+                            </form>
+                        }
+                        @if (User.Identity.IsAuthenticated && Model.AQuser != null)
+                        {
+                            <form asp-action="Logout" asp-controller="User" method="get">
+                                <button asp-action="Logout" class="ButtonMainStyleLOGOUT">Log out</button>
+                            </form>
+                        }
+                        <div style="margin-left:10px">
+                            <img src="~/images/Logo2.png" width=70 height=70>
+                        </div>
+                        <div class="TitleItem" style="font-size:30px">
+                            <span>
+                                AQ|
+                            </span>
+                        </div>
+                        <div class="TitleItem" style="font-size:18px; padding-top:20px; font-style:italic">
+                            <span>
+                                Answer here!
+                            </span>
+                        </div>
+                    </nav>
+
+                    <form asp-controller="AQpage" asp-action="AQpage" method="POST" class="form1">
+                        <div class="form-group search">
+                            <input asp-for="Search" class="form-input form-inputSearch" placeholder="Search..." />
+                        </div>
+                        <div style="font-size:15px; font-family:Montserrat; text-align:center" class="text-danger">@ViewBag.ErrorText</div>
+                    </form>
+                </header>
+            </div>
+        </div>
+</div>
+<div class="MainMenu"style="border-top:2px solid white">
+
+    @if (User.Identity.IsAuthenticated && Model.AQuser != null)
+    {
+
+
+        <div class="animLeft PopularArticles" style="background-color: #181818;box-shadow:0 0 5px 5px #111111; width:25%" id="myHeader3">
+            <div class="MainContent0" style="border-radius: 0;padding:5px;background-color: #181818;border-right:2px solid white">
+                <div class="MainContent" style="margin:0px;padding:2px;font-size:25px;border-radius: 0;background-color: #181818;">
+                    <form asp-controller="AQpage" method="POST" class="form1" style="width:100%" enctype="multipart/form-data">
+                        <div class="MainContent" style="background-color:#2e2e2edb;display:flex;margin:0;align-items:center;border-radius:10px 10px 0 0;box-shadow:-5px -5px 5px #111111">
+
+                            <div class="containerAvatar">
+                                <div class="avatar-upload">
+                                    <div class="avatar-edit">
+                                        <input asp-for="AQuser.FileAvatar" type='file' id="imageUpload" accept=".png, .jpg, .jpeg" />
+                                        <label for="imageUpload"> <i class="fa-solid"></i></label>
+                                    </div>
+                                    <div class="avatar-preview">
+                                        @if (Model.AQuser != null)
+                                        {
+                                            @if (Model.AQuser.Avatar != null)
+                                            {
+                                                <img class="RadiusIMG" id="imagePreview" style="width:80px; height:60px;width: 100%;height: 100%;object-fit: cover;" src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.AQuser.Avatar))" />
+                                            }
+
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div style="margin-left:10px;">
+                                <h1 style="text-align:center;font-style:italic">AQ</h1>
+                                <h1 style="font-style:italic">PROFILE</h1>
+                                <h1 style="font-style:italic;font-size:10px">*save when changing</h1>
+                            </div>
+                        </div>
+
+                        <div style="height:2px; width:100%; background-color:white"></div>
+                        <p style="font-size:20px;font-style:italic">- Login</p>
+                        <div class="form-group search">
+                            <input asp-for="AQuser.UserLogin" class="form-input form-inputSearch" placeholder="Enter Your login:" value="@Model.AQuser.UserLogin" style="color:white" />
+                            <span asp-validation-for="AQuser.UserLogin" style="font-size:15px; font-family:Montserrat" class="text-danger"></span>
+                        </div>
+                        <div style="height:2px; width:100%; background-color:white"></div>
+                        <p style="font-size:20px;font-style:italic">- Email</p>
+                        <div class="form-group search">
+                            <input asp-for="AQuser.Email" class="form-input form-inputSearch" placeholder="Enter Your email:" value="@Model.AQuser.Email" style="color:white" />
+                            <span asp-validation-for="AQuser.Email" style="font-size:15px; font-family:Montserrat" class="text-danger"></span>
+                        </div>
+                        <input asp-for="AQuser.UserPassword" value="@Model.AQuser.UserPassword" style="display:none" />
+                        <input asp-for="AQuser.UserConfirmPassword" value="@Model.AQuser.UserConfirmPassword" style="display:none" />
+                        <div style="height:2px; width:100%; background-color:white"></div>
+                        <button asp-action="SaveProfileInfo" type="submit" name="submit" id="submit" class="ButtonMainStyleLOGIN" style="margin-top:5px">SAVE</button>
+                        <div style="font-size:15px; font-family:Montserrat; text-align:center" class="text-danger">@ViewBag.ErrorText</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+
+
+    @if (User.Identity.IsAuthenticated && Model.AQuser != null)
+    {
+        <div class="ArticleBody">
+            @if (User.Identity.IsAuthenticated)
+            {
+
+
+
+
+                <form asp-controller="AQpage" method="post" enctype="multipart/form-data">
+                    <div style="border-radius:0;margin:0;padding:0px;padding-left:5px;border-left:4px solid #181818;height:20%;margin-top:15px;margin-bottom:0px">
+                        <div class="input-group" style="height:20%">
+                            <textarea class="form-input form-inputSearch placeholderStart" style="background-color:#181818;border-radius:0;margin:0;padding:10px;padding-bottom:10px;height:auto;resize:none;" placeholder="Press 'Create' and Create new article" readonly></textarea>
+                            <a class=" DefaultButtonComment form-input-addon" href="#" data-target="#login" data-toggle="modal" style="text-decoration:none; text-align:center">Create</a>
+                        </div>
+                        <div id="login" class="modal fade" role="dialog">
+                            <div class="modal-dialog" style="margin-top:200px">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <button data-dismiss="modal" class="close">&times;</button>
+                                        <div class="MainContent" style="background-color:#262626;border-radius:0;margin:0;padding:0px;padding-left:5px;border-left:4px solid #181818;height:20%;margin-top:15px;margin-bottom:0px">
+
+                                            <textarea asp-for="Article.ArticleName" class="form-input form-inputSearch placeholderStart" style="background-color:#181818;border-radius:0;margin:0;padding:10px;padding-bottom:50px;height:100%;resize:none" placeholder="Write the article NAME here"></textarea>
+                                            <textarea asp-for="Article.ArticleСontent" class="form-input form-inputSearch placeholderStart" style="background-color:#181818;border-radius:0;margin:0;padding:10px;padding-bottom:100px;height:100%;resize:none" placeholder="Write the article CONTENT here"></textarea>
+                                            <section>
+                                                <img src="http://www.randomlengthsnews.com/wp-content/themes/gonzo/images/no-image-blog-one.png" id="img">
+                                                <a id="addphoto" href="#" class="butn">+ Add Photo</a>
+                                                <a id="removephoto" href="#" class="butn">x Remove Photo</a>
+                                            </section>
+                                            <input asp-for="Article.FilePhoto" type="file" id="file" accept=".png, .jpg, .jpeg" />
+                                            <button asp-action="PublishArticle" class="DefaultButtonComment form-input-addon">Create</button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <form asp-controller="AQpage" asp-action="AQpage" method="post">
+
+                    <div class="segmented-control">
+                        @foreach (var checkBox in Model.CheckboxOptions)
+                        {
+                            <input type="radio" asp-for="SortView" value="@checkBox.Value" id="checkBox_@checkBox.Value" checked="@checkBox.IsActive" />
+                            <label for="checkBox_@checkBox.Value" class="segmented-control__1">
+                                @checkBox.Value
+                            </label>
+                        }
+                        <div>
+                            <button class=" DefaultButtonComment form-input-addon" style="bottom: 20%;right: 2%;">Save</button>
+                        </div>
+
+                        <div class="segmented-control__color"></div>
+                    </div>
+
+
+                </form>
+
+            }
+
+            @if (Model.Search == null)
+            {
+                @if (Model.Article == null)
+                {
+                    bool getAll = false;
+                    @foreach (var article in Model.Articles)
+                    {
+                        int count = 0;
+                        string k = "";
+                        @foreach (var comment in Model.Comments)
+                        {
+                            @if (comment.ArticleID == article.ArticleID)
+                            {
+                                count++;
+                            }
+                        }
+                        if (count <= 9999)
+                        {
+                            k += count;
+                        }
+                        else
+                        {
+                            k = count + "+";
+                        }
+                        string Kcomments = k.ToString() + " comments";
+
+                        <div class="MainContainer" style=" padding:0;margin:0;margin-top:6px;width:100%">
+                            <div class="MainContainer articlePost" style=" padding:0; width:100%;background-color:none">
+                                <div class="MainContainer" style="padding:0;margin:0;width:100%">
+                                    <div class="MainContent0" style="background-color:#181818;">
+                                        <form asp-controller="AQpage">
+                                            <div class="MainContent" style="background-color:#2e2e2edb; margin-bottom:10px;box-shadow: -15px 0 0px 2px #0085CF">
+                                                <div style=" display: flex;flex-direction: row-reverse;justify-content: space-between;flex-wrap: nowrap;">
+                                                    <h2 class="form-title fontWhite" style="text-align:end;color:#898989"><em>@article.ArticleCreateDate</em></h2>
+                                                    <h2 class="form-title fontWhite" style="color:#898989"><em><b>Posted by </b><u>@article.Author</u></em></h2>
+
+
+                                                </div>
+
+
+
+                                                @if (Model.Users.FirstOrDefault(x => x.UserID == article.UserID).Avatar != null)
+                                                {
+                                                    <div class="containerAvatar " style="display:inline-block">
+                                                        <div class="avatar-upload" style="  width: 45px;height: 45px;">
+                                                            <div class="avatar-preview" style="  width: 45px; height: 45px;">
+                                                                @if (Model.AQuser != null)
+                                                                {
+
+                                                                    <img class="RadiusIMG" id="imagePreview" style="width:80px; height:60px;width: 100%;height: 100%;object-fit: cover;" src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Users.FirstOrDefault(x=>x.UserID==article.UserID).Avatar))" />
+
+                                                                }
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+
+                                                <h2 class="form-title fontWhite" style="display:inline-block">  @article.ArticleName</h2>
+                                            </div>
+                                            <div class="MainContent" style="box-shadow: 15px 0 5px 2px #0085CF;border-radius: 0px 60px 60px 60px;padding-bottom:30px">
+                                                <hr align="center" style="width:90%; margin:8px 0; height:3px; margin: 0 auto; margin-bottom:2px" color="#181818" />
+                                                <div class="DivViewImage">
+                                                    <div class="DivH2">
+                                                        <h2 class="form-title fontWhite" style="font-weight:400">@article.ArticleСontent</h2>
+                                                    </div>
+                                                    @if (article.Photo != null && Convert.ToBase64String(article.Photo) != "0x")
+                                                    {
+
+                                                        <div class="ViewImage"> <i class="camera-img"><img class="imageSize" src="data:image/jpeg;base64,@(Convert.ToBase64String(article.Photo))" alt=""></i></div>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <input asp-for="Article.ArticleID" value="@article.ArticleID" style="display:none" />
+                                            <div style="display: flex;flex-direction: row;justify-content: space-between; flex-wrap: nowrap;">
+                                                <div style="margin-top:10px;margin-bottom:7px;display:flex">
+                                                    <div style="display:flex">
+
+                                                        @if (Model.AQuser.RoleID == 1)
+                                                        {
+
+                                                            <form asp-controller="AQpage">
+                                                                <button asp-action="DeleteArticle" class="ButtonMainStyleLOGOUT  button0radius" style="width:15%;padding:1px;margin-right:5px;margin-left:20px;margin-top:5px;"><i class="fa-regular fa-trash-can fa-2x" style="margin-top:5px"></i></button>
+                                                            </form>
+                                                            <img class="btnOpen" src="~/images/CommentImage.png" id="myPic" style="width:50px;height=50px;margin-left:15px;">
+                                                            <div style="display:flex">
+                                                                <span style="font-size:20px;color:#0085CF;margin-top:20px;margin-left:7px;text-decoration: underline">@k </span>
+                                                                <span style="font-size:20px;color:#0085CF;margin-top:20px;margin-left:7px;text-decoration: underline;margin-right:15px">comments</span>
+                                                            </div>
+
+                                                        }
+                                                    </div>
+                                                    @if (Model.AQuser.RoleID == 2)
+                                                    {
+                                                        <img class="btnOpen" src="~/images/CommentImage.png" id="myPic" style="width:50px;height=50px;margin-left:20px;">
+                                                        <span style="font-size:20px;color:#0085CF;margin-top:20px;margin-left:7px;text-decoration: underline">@k </span>
+                                                        <span style="font-size:20px;color:#0085CF;margin-top:20px;margin-left:7px;text-decoration: underline;margin-right:15px">comments</span>
+                                                    }
+                                                </div>
+                                                <button asp-action="AQpage" class="buttonJoin" style="width:15%;padding:1px;margin-right:20px;margin-top:10px">Join</button>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+                }
+
+
+
+
+
+                @if (Model.Article != null)
+                {
+                    bool getAll = false;
+                    int k = Model.Comments.Where(Comment => Comment.ArticleID == Model.Article.ArticleID).Count();
+                    <div class="MainContainer" style=" padding:0;margin:0;margin-top:6px;width:100%">
+                        <div class="MainContainer" style="/*background-color:#4a4a4adb;border: 2.5px solid #4a4a4adb;*/ /*padding:2px;*/ padding:0; width:100%;background-color:none">
+                            <div class="MainContainer articlePost" style="padding:0;margin:0;width:100%">
+                                <div class="MainContent0" style="background-color:#181818;">
+                                    <form asp-controller="AQpage">
+                                        <div class="MainContent" style="background-color:#2e2e2edb; margin-bottom:10px;box-shadow: -15px 0 0px 2px #0085CF">
+                                            <div style=" display: flex;flex-direction: row-reverse;justify-content: space-between;flex-wrap: nowrap;">
+                                                <h2 class="form-title fontWhite" style="text-align:end;color:#898989"><em>@Model.Article.ArticleCreateDate</em></h2>
+                                                <h2 class="form-title fontWhite" style="color:#898989"><em><b>Posted by </b><u>@Model.Article.Author</u></em></h2>
+                                            </div>
+
+
+                                            @if (Model.Users.FirstOrDefault(x => x.UserID == Model.Article.UserID).Avatar != null)
+                                            {
+                                                <div class="containerAvatar " style="display:inline-block">
+                                                    <div class="avatar-upload" style="  width: 45px;height: 45px;">
+                                                        <div class="avatar-preview" style="  width: 45px; height: 45px;">
+                                                            @if (Model.AQuser != null)
+                                                            {
+
+                                                                <img class="RadiusIMG" id="imagePreview" style="width:80px; height:60px;width: 100%;height: 100%;object-fit: cover;" src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Users.FirstOrDefault(x=>x.UserID==Model.Article.UserID).Avatar))" />
+                                                            }
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                            <h2 class="form-title fontWhite" style="display:inline-block">@Model.Article.ArticleName</h2>
+                                        </div>
+                                        <div class="MainContent" style="box-shadow: 15px 0 5px 2px #0085CF;border-radius: 0px 60px 60px 60px;padding-bottom:30px">
+                                            <hr align="center" style="width:90%; margin:8px 0; height:3px; margin: 0 auto; margin-bottom:2px" color="#181818" />
+                                            <div class="DivViewImage">
+                                                <div>
+                                                    <h2 class="form-title fontWhite" style="font-weight:400">@Model.Article.ArticleСontent</h2>
+                                                </div>
+                                                @if (Model.Article.Photo != null)
+                                                {
+
+                                                    <div class="ViewImage"> <i class="camera-img"><img class="imageSize" src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Article.Photo))" alt=""></i></div>
+                                                }
+                                            </div>
+                                        </div>
+                                        <input asp-for="Article.ArticleID" value="@Model.Article.ArticleID" style="display:none" />
+                                        <div style="display: flex;flex-direction: row;justify-content: space-between; flex-wrap: nowrap;">
+                                            <div style="margin-top:10px;margin-bottom:7px;">
+
+                                                <div style="display:flex">
+
+                                                    @if (Model.AQuser.RoleID == 1)
+                                                    {
+
+                                                        <form asp-controller="AQpage">
+                                                            <button asp-action="DeleteArticle" class="ButtonMainStyleLOGOUT button0radius" style="width:15%;padding:1px;margin-right:5px;margin-left:20px;margin-top:5px"><i class="fa-regular fa-trash-can fa-2x" style="margin-top:5px"></i></button>
+                                                        </form>
+                                                        <img class="btnOpen" src="~/images/CommentImage.png" id="myPic" style="width:50px;height=50px;margin-left:15px;">
+                                                        <div style="display:flex">
+                                                            <span style="font-size:20px;color:#0085CF;margin-top:20px;margin-left:7px;text-decoration: underline">@k </span>
+                                                            <span style="font-size:20px;color:#0085CF;margin-top:20px;margin-left:7px;text-decoration: underline;margin-right:15px">comments</span>
+                                                        </div>
+
+                                                    }
+                                                </div>
+
+                                                @if (Model.AQuser.RoleID == 2)
+                                                {
+                                                    <img class="btnOpen" src="~/images/CommentImage.png" id="myPic" style="width:50px;height=50px;margin-left:20px;">
+                                                    <span style="font-size:20px;color:#0085CF;margin-top:20px;margin-left:7px;text-decoration: underline">@k </span>
+                                                    <span style="font-size:20px;color:#0085CF;margin-top:20px;margin-left:7px;text-decoration: underline;margin-right:15px">comments</span>
+                                                }
+                                            </div>
+                                            <button asp-action="AQpage" class="buttonJoin" style="width:15%;padding:1px;margin-right:20px;margin-top:10px">Join</button>
+                                            @*}*@
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <form asp-controller="AQpage" method="post">
+                            <div style="border-radius:0;margin:0;padding:0px;padding-left:5px;border-left:4px solid #0085CF;height:200px;margin-top:15px;margin-bottom:15px">
+                                @*<div class="MainContent" style="background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);height:15%;border-radius:0;margin:0;padding:2px;color:#898989"><b>Comment as </b><em><u>@Model.AQuser.UserLogin</u></em></div>*@
+                               <b style="color:#0085CF">Comment as </b><em><u style="color:#0085CF">@Model.AQuser.UserLogin</u></em>
+                                <div class="input-group" style="height:85%">
+                                    <textarea asp-for="Comment.ComentContent" class="form-input form-inputSearch placeholderStart" style="background-color:#181818;border-radius:0;margin:0;padding:10px;padding-bottom:50px;height:100%;resize:none" placeholder="What are your thoughts?"></textarea>
+                                    <input asp-for="Comment.ArticleID" value="@Model.Article.ArticleID" style="display:none" />
+                                    <button asp-action="PublishComment" class="DefaultButtonComment form-input-addon">Comment</button>
+                                </div>
+                            </div>
+                        </form>
+                    }
+
+                    string MID = "tt";
+                    string PODMID = "TT";
+                    string OTHERMID = "oo";
+                    IEnumerable<Comment> comments = Model.Comments.Where(x => x.ArticleID == Model.Article.ArticleID || x.ArticleID == 0);
+                    foreach (var comment in comments.Reverse())
+                    {
+                        if (comment.ArticleID != 0 && comment.AnswerCommentID == 0)
+                        {
+                            @*<div class="MainContent" style="background-color:#262626;border-radius:0;margin:0;padding:0px;padding-left:10px;padding-right:5px; border-right:4px solid #181818;height:auto;margin-top:5px;margin-bottom:5px;width:100%">*@
+                                <div class="MainContent" style="background-color:#181818;border-radius: 0px 0px 0px 50px;padding:10px;margin-left:0;margin-right:0;padding-bottom:10px;margin-top:5px;margin-bottom:5px;">
+
+                                    <div style=" display: flex;flex-direction: row;flex-wrap: nowrap;align-items:center">
+                                        <div style="line-height:0.5;display:flex;align-items:center">
+
+
+                                            @if (Model.Users.FirstOrDefault(x => x.UserID == comment.UserID).Avatar != null)
+                                            {
+                                                <div class="containerAvatar " style="display:inline-block">
+                                                    <div class="avatar-upload" style="  width: 45px;height: 45px;">
+                                                        <div class="avatar-preview" style="  width: 45px; height: 45px;">
+                                                            @if (Model.AQuser != null)
+                                                            {
+
+                                                                <img class="RadiusIMG" id="imagePreview" style="width:80px; height:60px;width: 100%;height: 100%;object-fit: cover;" src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Users.FirstOrDefault(x=>x.UserID==comment.UserID).Avatar))" />
+                                                            }
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                            <p class="form-title fontWhite" style="display:inline-block;margin-left:10px">@comment.Author</p>
+                                            <div class="MainContent" style="background-color:#FFFFFF;border-radius:0;padding:0px; margin-left:0px;margin-right:0px;margin-top:0px;margin-bottom:0px;height:2px;display:inline-block;width:100%;"></div>
+                                        </div>
+
+                                        <div class="MainContent" style="background-color:#202020;border-radius:0;padding:0px; margin-left:10px;margin-right:10px;margin-top:0px;margin-bottom:0px;height:20px;display:inline-block;width:100%;"></div>
+                                        <a class="DefaultButtonComment" href="#" data-target=#@MID data-toggle="modal" style="text-decoration:none; text-align:center;position:static;margin-top:5px;margin-bottom:5px;width:140px;font-size:17px">Reply   <img src="~/images/Reply-removebg-preview.png" width=17px height=17px></a>
+
+
+
+                                    </div>
+                                    <div class="MainContent" style="background-color:#202020;border-radius: 0px 0px 0px 50px;padding:20px; margin-left:0;margin-right:0;padding-top:10px;padding-bottom:10px">
+                                        <h2 class="form-title fontWhite">@comment.ComentContent</h2>
+                                    </div>
+
+
+                                </div>
+                            @*</div>*@
+                            //podcomm
+                            IEnumerable<Comment> answerComments = Model.Comments.Where(x => x.AnswerCommentID == comment.CommentID);
+                            foreach (var answerComment in answerComments)
+                            {
+                                <div style=" display: flex;flex-direction: row;flex-wrap: nowrap;margin-left:30px">
+                                    <div class="rowReply">
+                                        <img src="~/images/ReplyRowSIM.png" width=25px height=25px>
+                                    </div>
+                                    @*<div class="MainContent" style="background-color:#262626;border-radius:0;margin:0;padding:0px;padding-left:10px;padding-right:5px; border-right:4px solid #181818;height:auto;margin-top:5px;margin-bottom:5px;width:100%">*@
+                                        <div class="MainContent" style="background-color:#181818;border-radius: 0px 0px 0px 50px;padding:10px;margin-left:0;margin-right:0;padding-bottom:10px;width:100%;margin-top:5px;margin-bottom:5px;">
+                                            <div style=" display: flex;flex-direction: row;flex-wrap: nowrap;align-items:center">
+                                                <div style="line-height:0.5;display:flex;align-items:center">
+
+
+                                                    @if (Model.Users.FirstOrDefault(x => x.UserID == answerComment.UserID).Avatar != null)
+                                                    {
+                                                        <div class="containerAvatar " style="display:inline-block">
+                                                            <div class="avatar-upload" style="  width: 45px;height: 45px;">
+                                                                <div class="avatar-preview" style="  width: 45px; height: 45px;">
+                                                                    @if (Model.AQuser != null)
+                                                                    {
+
+                                                                        <img class="RadiusIMG" id="imagePreview" style="width:80px; height:60px;width: 100%;height: 100%;object-fit: cover;" src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Users.FirstOrDefault(x=>x.UserID==answerComment.UserID).Avatar))" />
+                                                                    }
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+
+                                                    <p class="form-title fontWhite" style="display:inline-block;margin-left:10px"> @answerComment.Author</p>
+                                                    <div class="MainContent" style="background-color:#FFFFFF;border-radius:0;padding:0px; margin-left:0px;margin-right:0px;margin-top:0px;margin-bottom:0px;height:2px;display:inline-block;width:100%;"></div>
+                                                </div>
+
+                                                <div class="MainContent" style="background-color:#202020;border-radius:0;padding:0px; margin-left:10px;margin-right:10px;margin-top:0px;margin-bottom:0px;height:20px;display:inline-block;width:100%;"></div>
+                                                <a id="@comment.CommentID" class="DefaultButtonComment" href="#" data-target="#@PODMID" data-toggle="modal" style="text-decoration:none; text-align:center;position:static;margin-top:5px;margin-bottom:5px;width:140px;font-size:17px">Reply   <img src="~/images/Reply-removebg-preview.png" width=17px height=17px></a>
+                                            </div>
+                                            <div class="MainContent" style="background-color:#202020;border-radius: 0px 0px 0px 50px;padding:20px; margin-left:0;margin-right:0;padding-top:10px;padding-bottom:10px">
+                                                <h2 class="form-title fontWhite">@answerComment.ComentContent</h2>
+                                            </div>
+                                        </div>
+                                    @*</div>*@
+                                </div>
+
+                                <div id=@PODMID class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <button data-dismiss="modal" class="close">&times;</button>
+                                                <form asp-controller="AQpage" method="post">
+                                                    <div class="MainContent" style="background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);border-radius:0;margin:0;padding:0px;padding-left:5px;border-left:4px solid #181818;height:20%;margin-top:15px;margin-bottom:0px">
+
+
+                                                        @*<div class="MainContent" style="background-color:#262626;border-radius:0;margin:0;padding:0px;padding-left:10px;padding-right:5px; border-right:4px solid #181818;height:auto;margin-top:5px;margin-bottom:5px;width:100%">*@
+                                                            <div class="MainContent" style="background-color:#181818;border-radius: 0px 0px 0px 50px;padding:10px;margin-left:0;margin-right:0;padding-bottom:10px;width:100%;margin-top:5px;margin-bottom:5px;">
+
+                                                                <div style=" display: flex;flex-direction: row;flex-wrap: nowrap;align-items:center">
+                                                                    <div style="line-height:0.5;display:flex;align-items:center">
+
+
+                                                                        @if (Model.Users.FirstOrDefault(x => x.UserID == answerComment.UserID).Avatar != null)
+                                                                        {
+                                                                            <div class="containerAvatar " style="display:inline-block">
+                                                                                <div class="avatar-upload" style="  width: 45px;height: 45px;">
+                                                                                    <div class="avatar-preview" style="  width: 45px; height: 45px;">
+                                                                                        @if (Model.AQuser != null)
+                                                                                        {
+
+                                                                                            <img class="RadiusIMG" id="imagePreview" style="width:80px; height:60px;width: 100%;height: 100%;object-fit: cover;" src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Users.FirstOrDefault(x=>x.UserID==answerComment.UserID).Avatar))" />
+                                                                                        }
+
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        }
+
+
+                                                                        <p class="form-title fontWhite" style="display:inline-block;margin-left:10px">@answerComment.Author</p>
+                                                                        <div class="MainContent" style="background-color:#FFFFFF;border-radius:0;padding:0px; margin-left:0px;margin-right:0px;margin-top:0px;margin-bottom:0px;height:2px;display:inline-block;width:100%;"></div>
+                                                                    </div>
+
+                                                                    <div class="MainContent" style="background-color:#202020;border-radius:0;padding:0px; margin-left:10px;margin-right:10px;margin-top:0px;margin-bottom:0px;height:20px;display:inline-block;width:100%;"></div>
+                                                                    <a class="DefaultButtonComment" href="#" data-target="#login2" data-toggle="modal" style="text-decoration:none; text-align:center;position:static;margin-top:5px;margin-bottom:5px;width:140px;font-size:17px">Reply   <img src="~/images/Reply-removebg-preview.png" width=17px height=17px></a>
+
+
+
+                                                                </div>
+                                                                <div class="MainContent" style="background-color:#202020;border-radius: 0px 0px 0px 50px;padding:20px; margin-left:0;margin-right:0;padding-top:10px;padding-bottom:10px">
+                                                                    <h2 class="form-title fontWhite">@answerComment.ComentContent</h2>
+                                                                </div>
+
+
+                                                            </div>
+                                                        @*</div>*@
+
+
+
+                                                        <form asp-controller="AQpage" method="post">
+                                                            <div class="MainContent" style="background-color:#262626;border-radius:0;margin:0;padding:0px;padding-left:5px;border-left:4px solid #181818;height:200px;margin-top:15px;margin-bottom:15px">
+                                                                <div class="MainContent" style="background-color:#262626;height:15%;border-radius:0;margin:0;padding:2px;color:#898989"><b>Comment as </b><em><u>@Model.AQuser.UserLogin</u></em></div>
+                                                                <div class="input-group" style="height:85%">
+                                                                    <textarea asp-for="Comment.ComentContent" class="form-input form-inputSearch placeholderStart" style="background-color:#181818;border-radius:0;margin:0;padding:10px;padding-bottom:50px;height:100%;resize:none" placeholder="What are your thoughts?"></textarea>
+                                                                    <input asp-for="Comment.AnswerCommentID" value="@answerComment.CommentID" style="display:none" />
+                                                                    @* <span asp-validation-for="Email" style="font-size:15px; font-family:Montserrat" class="text-danger"></span>*@
+                                                                    <button asp-action="CommentOnComment" class="DefaultButtonComment form-input-addon">Comment</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+
+
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                PODMID += "t";
+                            }
+
+
+
+
+                            <div id=@MID class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+
+                                    <div class="modal-content">
+                                        <div class="modal-body">
+                                            <button data-dismiss="modal" class="close">&times;</button>
+                                            <form asp-controller="AQpage" method="post">
+                                                <div class="MainContent" style="background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);border-radius:0;margin:0;padding:0px;padding-left:5px;border-left:4px solid #181818;height:20%;margin-top:15px;margin-bottom:0px">
+
+
+                                                    @*<div class="MainContent" style="background-color:#262626;border-radius:0;margin:0;padding:0px;padding-left:10px;padding-right:5px; border-right:4px solid #181818;height:auto;margin-top:5px;margin-bottom:5px;width:100%">*@
+                                                        <div class="MainContent" style="background-color:#181818;border-radius: 0px 0px 0px 50px;padding:10px;margin-left:0;margin-right:0;padding-bottom:10px;width:100%;margin-top:5px;margin-bottom:5px;">
+
+                                                            <div style=" display: flex;flex-direction: row;flex-wrap: nowrap;align-items:center">
+                                                                <div style="line-height:0.5;display:flex;align-items:center">
+
+
+                                                                    @if (Model.Users.FirstOrDefault(x => x.UserID == comment.UserID).Avatar != null)
+                                                                    {
+                                                                        <div class="containerAvatar " style="display:inline-block">
+                                                                            <div class="avatar-upload" style="  width: 45px;height: 45px;">
+                                                                                <div class="avatar-preview" style="  width: 45px; height: 45px;">
+                                                                                    @if (Model.AQuser != null)
+                                                                                    {
+
+                                                                                        <img class="RadiusIMG" id="imagePreview" style="width:80px; height:60px;width: 100%;height: 100%;object-fit: cover;" src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Users.FirstOrDefault(x=>x.UserID==comment.UserID).Avatar))" />
+                                                                                    }
+
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    }
+
+
+                                                                    <p class="form-title fontWhite" style="display:inline-block;margin-left:10px">@comment.Author</p>
+                                                                    <div class="MainContent" style="background-color:#FFFFFF;border-radius:0;padding:0px; margin-left:0px;margin-right:0px;margin-top:0px;margin-bottom:0px;height:2px;display:inline-block;width:100%;"></div>
+                                                                </div>
+
+                                                                <div class="MainContent" style="background-color:#202020;border-radius:0;padding:0px; margin-left:10px;margin-right:10px;margin-top:0px;margin-bottom:0px;height:20px;display:inline-block;width:100%;"></div>
+                                                                <a class="DefaultButtonComment" href="#" data-target="#login2" data-toggle="modal" style="text-decoration:none; text-align:center;position:static;margin-top:5px;margin-bottom:5px;width:140px;font-size:17px">Reply   <img src="~/images/Reply-removebg-preview.png" width=17px height=17px></a>
+
+
+
+                                                            </div>
+                                                            <div class="MainContent" style="background-color:#202020;border-radius: 0px 0px 0px 50px;padding:20px; margin-left:0;margin-right:0;padding-top:10px;padding-bottom:10px">
+                                                                <h2 class="form-title fontWhite">@comment.ComentContent</h2>
+                                                            </div>
+
+
+                                                        </div>
+                                                    @*</div>*@
+
+
+
+                                                    <form asp-controller="AQpage" method="post">
+                                                        <div class="MainContent" style="background-color:#262626;border-radius:0;margin:0;padding:0px;padding-left:5px;border-left:4px solid #181818;height:200px;margin-top:15px;margin-bottom:15px">
+                                                            <div class="MainContent" style="background-color:#262626;height:15%;border-radius:0;margin:0;padding:2px;color:#898989"><b>Comment as </b><em><u>@Model.AQuser.UserLogin</u></em></div>
+                                                            <div class="input-group" style="height:85%">
+                                                                <textarea asp-for="Comment.ComentContent" class="form-input form-inputSearch placeholderStart" style="background-color:#181818;border-radius:0;margin:0;padding:10px;padding-bottom:50px;height:100%;resize:none" placeholder="What are your thoughts?"></textarea>
+                                                                <input asp-for="Comment.AnswerCommentID" value="@comment.CommentID" style="display:none" />
+                                                                <button asp-action="CommentOnComment" class="DefaultButtonComment form-input-addon">Comment</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+
+
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            MID += "T";
+
+                        }
+                        else
+                        {
+                            IEnumerable<Comment> commentsArticle = Model.Comments.Where(x => x.ArticleID != 0);
+                            IEnumerable<Comment> commentsOther = null;
+
+                            bool choose = false;
+                            foreach (var articleComment in commentsArticle)
+                            {
+                                if (comment.AnswerCommentID == articleComment.CommentID)
+                                {
+                                    if (articleComment.AnswerCommentID != 0)
+                                    {
+
+                                        choose = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (choose == true)
+                            {
+                                <div style=" display: flex;flex-direction: row;flex-wrap: nowrap;margin-left:30px">
+                                    <div class="rowReply">
+                                        <img src="~/images/ReplyRowSIMReverse.png" width=25px height=25px>
+                                        <img src="~/images/ReplyRowSIMReverse.png" width=25px height=25px>
+                                        <img src="~/images/ReplyRowSIMReverse.png" width=25px height=25px>
+                                    </div>
+                                    @*<div class="MainContent" style="background-color:#262626;border-radius:0;margin:0;padding:0px;padding-left:10px;padding-right:5px; border-right:4px solid #181818;height:auto;margin-top:5px;margin-bottom:5px;width:100%">*@
+                                        <div class="MainContent" style="background-color:#181818;border-radius: 0px 0px 0px 50px;padding:10px;margin-left:0;margin-right:0;padding-bottom:10px;width:100%;margin-top:5px;margin-bottom:5px;">
+                                            @{
+                                                string forward = $"Replied {(Model.Comments.FirstOrDefault(x => x.CommentID == comment.AnswerCommentID)).Author} - {(Model.Comments.FirstOrDefault(x => x.CommentID == comment.AnswerCommentID)).ComentContent}";
+                                            }
+                                            <p class="truncate">@forward</p>
+                                            <div style=" display: flex;flex-direction: row;flex-wrap: nowrap;align-items:center">
+                                                <div style="line-height:0.5;display:flex;align-items:center">
+
+
+                                                    @if (Model.Users.FirstOrDefault(x => x.UserID == comment.UserID).Avatar != null)
+                                                    {
+                                                        <div class="containerAvatar " style="display:inline-block">
+                                                            <div class="avatar-upload" style="  width: 45px;height: 45px;">
+                                                                <div class="avatar-preview" style="  width: 45px; height: 45px;">
+                                                                    @if (Model.AQuser != null)
+                                                                    {
+
+                                                                        <img class="RadiusIMG" id="imagePreview" style="width:80px; height:60px;width: 100%;height: 100%;object-fit: cover;" src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Users.FirstOrDefault(x=>x.UserID==comment.UserID).Avatar))" />
+                                                                    }
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+
+
+                                                    <p class="form-title fontWhite" style="display:inline-block;margin-left:10px"> @comment.Author</p>
+                                                    <div class="MainContent" style="background-color:#FFFFFF;border-radius:0;padding:0px; margin-left:0px;margin-right:0px;margin-top:0px;margin-bottom:0px;height:2px;display:inline-block;width:100%;"></div>
+                                                </div>
+
+                                                <div class="MainContent" style="background-color:#202020;border-radius:0;padding:0px; margin-left:10px;margin-right:10px;margin-top:0px;margin-bottom:0px;height:20px;display:inline-block;width:100%;align-items:center">
+                                                </div>
+                                                <a id="@comment.CommentID" class="DefaultButtonComment" href="#" data-target="#@OTHERMID" data-toggle="modal" style="text-decoration:none; text-align:center;position:static;margin-top:5px;margin-bottom:5px;width:140px;font-size:17px">Reply   <img src="~/images/Reply-removebg-preview.png" width=17px height=17px></a>
+                                            </div>
+                                            <div class="MainContent" style="background-color:#202020;border-radius: 0px 0px 0px 50px;padding:20px; margin-left:0;margin-right:0;padding-top:10px;padding-bottom:10px">
+                                                <h2 class="form-title fontWhite">@comment.ComentContent</h2>
+                                            </div>
+                                        </div>
+                                    @*</div>*@
+                                </div>
+
+                                <div id=@OTHERMID class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                <button data-dismiss="modal" class="close">&times;</button>
+                                                <form asp-controller="AQpage" method="post">
+                                                    <div class="MainContent" style="background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);border-radius:0;margin:0;padding:0px;padding-left:5px;border-left:4px solid #181818;height:20%;margin-top:15px;margin-bottom:0px">
+
+
+                                                        @*<div class="MainContent" style="background-color:#262626;border-radius:0;margin:0;padding:0px;padding-left:10px;padding-right:5px; border-right:4px solid #181818;height:auto;margin-top:5px;margin-bottom:5px;width:100%">*@
+                                                            <div class="MainContent" style="background-color:#181818;border-radius: 0px 0px 0px 50px;padding:10px;margin-left:0;margin-right:0;padding-bottom:10px;width:100%;margin-top:5px;margin-bottom:5px;">
+
+                                                                <div style=" display: flex;flex-direction: row;flex-wrap: nowrap;align-items:center">
+                                                                    <div style="line-height:0.5;display:flex;align-items:center">
+
+
+                                                                        @if (Model.Users.FirstOrDefault(x => x.UserID == comment.UserID).Avatar != null)
+                                                                        {
+                                                                            <div class="containerAvatar " style="display:inline-block">
+                                                                                <div class="avatar-upload" style="  width: 45px;height: 45px;">
+                                                                                    <div class="avatar-preview" style="  width: 45px; height: 45px;">
+                                                                                        @if (Model.AQuser != null)
+                                                                                        {
+
+                                                                                            <img class="RadiusIMG" id="imagePreview" style="width:80px; height:60px;width: 100%;height: 100%;object-fit: cover;" src="data:image/jpeg;base64,@(Convert.ToBase64String(Model.Users.FirstOrDefault(x=>x.UserID==comment.UserID).Avatar))" />
+                                                                                        }
+
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        }
+
+
+                                                                        <p class="form-title fontWhite" style="display:inline-block;margin-left:10px">@comment.Author</p>
+                                                                        <div class="MainContent" style="background-color:#FFFFFF;border-radius:0;padding:0px; margin-left:0px;margin-right:0px;margin-top:0px;margin-bottom:0px;height:2px;display:inline-block;width:100%;"></div>
+                                                                    </div>
+
+                                                                    <div class="MainContent" style="background-color:#202020;border-radius:0;padding:0px; margin-left:10px;margin-right:10px;margin-top:0px;margin-bottom:0px;height:20px;display:inline-block;width:100%;"></div>
+                                                                    <a class="DefaultButtonComment" href="#" data-target="#login2" data-toggle="modal" style="text-decoration:none; text-align:center;position:static;margin-top:5px;margin-bottom:5px;width:140px;font-size:17px">Reply   <img src="~/images/Reply-removebg-preview.png" width=17px height=17px></a>
+
+
+
+                                                                </div>
+                                                                <div class="MainContent" style="background-color:#202020;border-radius: 0px 0px 0px 50px;padding:20px; margin-left:0;margin-right:0;padding-top:10px;padding-bottom:10px">
+                                                                    <h2 class="form-title fontWhite">@comment.ComentContent</h2>
+                                                                </div>
+
+
+                                                            </div>
+                                                        @*</div>*@
+
+
+
+                                                        <form asp-controller="AQpage" method="post">
+                                                            <div class="MainContent" style="background-color:#262626;border-radius:0;margin:0;padding:0px;padding-left:5px;border-left:4px solid #181818;height:200px;margin-top:15px;margin-bottom:15px">
+                                                                <div class="MainContent" style="background-color:#262626;height:15%;border-radius:0;margin:0;padding:2px;color:#898989"><b>Comment as </b><em><u>@Model.AQuser.UserLogin</u></em></div>
+
+                                                                <div class="input-group" style="height:85%">
+                                                                    <textarea asp-for="Comment.ComentContent" class="form-input form-inputSearch placeholderStart" style="background-color:#181818;border-radius:0;margin:0;padding:10px;padding-bottom:50px;height:100%;resize:none" placeholder="What are your thoughts?"></textarea>
+                                                                    <input asp-for="Comment.AnswerCommentID" value="@comment.CommentID" style="display:none" />
+
+                                                                    <button asp-action="CommentOnComment" class="DefaultButtonComment form-input-addon">Comment</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+
+
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                OTHERMID += "o";
+                            }
+                        }
+
+
+                    }
+                }
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            @if (Model.Search != null)
+            {
+
+
+                bool getAll = false;
+                @foreach (var article in Model.Articles)
+                {
+                    if ((article.ArticleName.ToLower().Contains(Model.Search.ToLower())) || (article.ArticleСontent.ToLower().Contains(Model.Search.ToLower())) || (article.Author.ToLower().Contains(Model.Search.ToLower())))
+                    {
+                        int count = 0;
+                        string k = "";
+                        @foreach (var comment in Model.Comments)
+                        {
+                            @if (comment.ArticleID == article.ArticleID)
+                            {
+                                count++;
+                            }
+                        }
+                        if (count <= 9999)
+                        {
+                            k += count;
+                        }
+                        else
+                        {
+                            k = count + "+";
+                        }
+                        <div class="MainContainer" style=" padding:0;margin:0;margin-top:6px;width:100%">
+                            <div class="MainContainer" style="/*background-color:#4a4a4adb;border: 2.5px solid #4a4a4adb;*/ /*padding:2px;*/ padding:0; width:100%;background-color:none">
+                                <div class="MainContainer articlePost" style="padding:0;margin:0;width:100%">
+                                    <div class="MainContent0" style="background-color:#181818;">
+                                        <form asp-controller="AQpage">
+                                            <div class="MainContent" style="background-color:#2e2e2edb; margin-bottom:10px;box-shadow: -15px 0 0px 2px #0085CF">
+                                                @if (getAll == false)
+                                                {
+                                                    @if (Model.Article == null)
+                                                    {
+                                                        <div style=" display: flex;flex-direction: row-reverse;justify-content: space-between;flex-wrap: nowrap;">
+                                                            <h2 class="form-title fontWhite" style="text-align:end;color:#898989"><em>@article.ArticleCreateDate</em></h2>
+                                                            <h2 class="form-title fontWhite" style="color:#898989"><em><b>Posted by </b><u>@article.Author</u></em></h2>
+                                                        </div>
+                                                        <h2 class="form-title fontWhite">@article.ArticleName</h2>
+                                                    }
+                                                    @if (Model.Article != null)
+                                                    {
+                                                        <div style=" display: flex;flex-direction: row-reverse;justify-content: space-between;flex-wrap: nowrap;">
+                                                            <h2 class="form-title fontWhite" style="text-align:end;color:#898989"><em>@article.ArticleCreateDate</em></h2>
+                                                            <h2 class="form-title fontWhite" style="color:#898989"><em><b>Posted by </b><u>@article.Author</u></em></h2>
+                                                        </div>
+                                                        <h2 class="form-title fontWhite">@article.ArticleName</h2>
+                                                        getAll = true;
+                                                    }
+                                                }
+                                            </div>
+                                            <div class="MainContent" style="box-shadow: 15px 0 5px 2px #0085CF;border-radius: 0px 60px 60px 60px;padding-bottom:30px">
+                                                <hr align="center" style="width:90%; margin:8px 0; height:3px; margin: 0 auto; margin-bottom:2px" color="Black" />
+                                                <div class="DivViewImage">
+                                                    <div>
+                                                        <h2 class="form-title fontWhite" style="font-weight:400">@article.ArticleСontent</h2>
+                                                    </div>
+                                                    @if (article.Photo != null)
+                                                    {
+
+                                                        <div class="ViewImage"> <i class="camera-img"><img class="imageSize" src="data:image/jpeg;base64,@(Convert.ToBase64String(article.Photo))" alt=""></i></div>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <input asp-for="Article.ArticleID" value="@article.ArticleID" style="display:none" />
+                                            <div style="display: flex;flex-direction: row;justify-content: space-between; flex-wrap: nowrap;">
+                                                <div style="margin-top:10px;margin-bottom:7px;">
+
+                                                    <div style="display:flex">
+
+                                                        @if (Model.AQuser.RoleID == 1)
+                                                        {
+
+                                                            <form asp-controller="AQpage">
+                                                                <button asp-action="DeleteArticle" class="ButtonMainStyleLOGOUT button0radius" style="width:15%;padding:1px;margin-right:5px;margin-left:20px;margin-top:5px"><i class="fa-regular fa-trash-can fa-2x" style="margin-top:5px"></i></button>
+                                                            </form>
+                                                            <img class="btnOpen" src="~/images/CommentImage.png" id="myPic" style="width:50px;height=50px;margin-left:15px;">
+                                                            <div style="display:flex">
+                                                                <span style="font-size:20px;color:#0085CF;margin-top:20px;margin-left:7px;text-decoration: underline">@k </span>
+                                                                <span style="font-size:20px;color:#0085CF;margin-top:20px;margin-left:7px;text-decoration: underline;margin-right:15px">comments</span>
+                                                            </div>
+
+                                                        }
+                                                    </div>
+                                                    @if (Model.AQuser.RoleID == 2)
+                                                    {
+                                                        <img class="btnOpen" src="~/images/CommentImage.png" id="myPic" style="width:50px;height=50px;margin-left:20px;">
+                                                        <span style="font-size:20px;color:#0085CF;margin-top:20px;margin-left:7px;text-decoration: underline">@k </span>
+                                                        <span style="font-size:20px;color:#0085CF;margin-top:20px;margin-left:7px;text-decoration: underline;margin-right:15px">comments</span>
+                                                    }
+
+
+                                                </div>
+                                                <button asp-action="AQpage" class="buttonJoin" style="width:15%;padding:1px;margin-right:20px;margin-top:10px">Join</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+        </div>
+
+
+        <div class="animRight PopularArticles" style="box-shadow:0 0 5px 5px #111111;width:20%;" id="myHeader4">
+            <div class="MainContent0" style="border-radius: 0;padding:5px;background-color: #181818;border-left:2px solid white">
+                <div class="MainContent" style="margin:0px;padding:2px;font-size:25px;border-radius: 0;background-color: #181818;">
+                    <div class="MainContent Fire" style="background-color:#2e2e2edb;display:flex;margin:0;align-items:center;border-radius:10px 10px 0 0;box-shadow:-5px -5px  5px #111111;font-size:25px;">
+                        TOP-5 Popular articles
+                    </div>
+                    <div style="height:2px; width:100%; background-color:white"></div>
+                    @{
+                        int num = 1;
+                                                                        @foreach (var article in Model.ArticlesHot)
+                        {
+                                                                            <form asp-controller="AQpage">
+                                                                                <p style="font-size:20px;font-style:italic">-@article.Author-</p>
+                                                                                <div>
+                                                                                    <input asp-for="Article.ArticleID" value="@article.ArticleID" style="display:none" />
+                                                                                    <button asp-action="AQpage" style="width:100%;background-color:#2e2e2edb;color:white;border:none;text-align:left;padding-left:10px;padding-right:10px; white-space: nowrap; overflow: hidden;  text-overflow: ellipsis; "> @num. @article.ArticleName</button>
+                                                                                </div>
+                                                                                <div style="height:2px; width:100%; background-color:white;margin-top:2px"></div>
+                                                                            </form>
+                            num++;
+                            if (num == 6) { break; }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+
+    }
+    else
+    {
+        <div class="containerCenter">
+            <p class="form-title fontWhite">Please, log into your account</p>
+        </div>
+    }
+
+</div>
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,148 @@
+﻿@model AnalyticsModel;
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"] - Analytics</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="~/css/Generick.css">
+    <link rel="stylesheet" href="~/css/Analytics.css">
+
+</head>
+<body>
+       
+               <h1 style="text-align:center"> AQ Analytics</h1>
+      <hr style="  border: 10px solid black"/>
+    <div style="display:flex">
+        <div class="BAR">
+            <div>
+                <div class="card-header"style="padding:5px;font-size:20px">
+                    Articles
+                </div>
+                <div class="card-body">
+                    <canvas id="bar1"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="BAR">
+            <div>
+                <div class="card-header"style="padding:5px;font-size:20px">
+                    Comments
+                </div>
+                <div class="card-body">
+                    <canvas id="bar2"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="BAR"style="margin-left:400px">
+        <div class="col-sm-6">
+            <div class="card-header"style="padding:5px;font-size:20px">
+                All Data
+            </div>
+            <div class="card-body">
+                <canvas class="my-4 h-25" id="pie"></canvas>
+            </div>
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script type="text/javascript">
+
+        var yValues = ["@Model.ArticlesCount[0]", "@Model.ArticlesCount[1]", "@Model.ArticlesCount[2]", "@Model.ArticlesCount[3]", "@Model.ArticlesCount[4]"];
+        var xValues = ["@Model.UsersIDArt[0]", "@Model.UsersIDArt[1]", "@Model.UsersIDArt[2]", "@Model.UsersIDArt[3]", "@Model.UsersIDArt[4]"];
+        var barColors = ["red", "green", "blue", "orange", "brown"];
+
+        new Chart("bar1", {
+            type: "bar",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                }]
+            },
+            options: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: "Top 5 users by count of posts"
+                },
+                scales: {
+                    xAxes: [{ ticks: { min: 10, max: 60 } }]
+                }
+            }
+        });
+
+        var yValues = ["@Model.CommentsCount[0]", "@Model.CommentsCount[1]", "@Model.CommentsCount[2]", "@Model.CommentsCount[3]", "@Model.CommentsCount[4]"];
+        var xValues = ["@Model.UsersIDCom[0]", "@Model.UsersIDCom[1]", "@Model.UsersIDCom[2]", "@Model.UsersIDCom[3]", "@Model.UsersIDCom[4]"];
+        var barColors = ["red", "green", "blue", "orange", "brown"];
+
+        new Chart("bar2", {
+            type: "bar",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                }]
+            },
+            options: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: "Top 5 users by count of comments"
+                },
+                scales: {
+                    xAxes: [{ ticks: { min: 10, max: 60 } }]
+                }
+            }
+        });
+        var xValues = ["Users", "Comments", "Articles"];
+        var yValues = [@Model.CountUsers, @Model.CountComments, @Model.CountArticles];
+        //string barColors = new string(5);
+        //var barColors;
+
+        //for (int i = 0; i < 5;i++){
+        //   barColors
+        //}
+        //var color
+        let colors = new Array();
+        for (step = 0; step < 3; step++) {
+            a = Math.floor(Math.random() * (9)),
+                b = Math.floor(Math.random() * (9)),
+                c = Math.floor(Math.random() * (9)),
+                d = Math.floor(Math.random() * (9)),
+                e = Math.floor(Math.random() * (9)),
+                f = Math.floor(Math.random() * (9)),
+                color = '#' + a.toString(16) + b.toString(16) + c.toString(16) + d.toString(16) + e.toString(16) + f.toString(16);
+            colors.push(color);
+        }
+
+        var barColors = [
+            colors[0],
+            colors[1],
+            colors[2]
+        ];
+        new Chart("pie", {
+            type: "doughnut",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: "Content"
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>

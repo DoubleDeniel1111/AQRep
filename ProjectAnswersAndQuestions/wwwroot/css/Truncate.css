@@ -1,0 +1,10 @@
+﻿.truncate {
+    /*background: #f4eddf;*/ /* Цвет фона */
+    /*padding: 10px;*/ /* Поля вокруг текста */
+    white-space:pre-wrap; /* Текст не переносится */
+    overflow: hidden; /* Обрезаем всё за пределами блока */
+    text-overflow: ellipsis; /* Добавляем многоточие */
+    box-sizing: border-box;
+    max-width: 90%;
+    display:inline-block
+}

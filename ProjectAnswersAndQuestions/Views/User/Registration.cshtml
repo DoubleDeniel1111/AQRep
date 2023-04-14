@@ -1,0 +1,58 @@
+﻿@using ProjectAnswersAndQuestions.Models;
+@{
+    Layout = "~/Views/Shared/_LayoutRegistration.cshtml";
+}
+
+@model UserRegistration;
+@{
+    ViewData["Title"] = "Registration Page";
+}
+
+
+        <!-- <img src="images/signup-bg.jpg" alt=""> -->
+        <div class="MainContainer">
+            <div  class="MainContent">
+                <form asp-action="Registration" asp-controller="User" method="POST" id="signup-form">
+                     <div class="logo">
+                       <img src="~/images/Logo.png" width=50 height=50>
+                     </div>
+                    <h2 class="form-title">Create AQ account</h2>
+                    <hr align="center" width="300" color="Black" />
+                    <div class="form-group">
+                         <input type="text" asp-for="UserLogin" class="form-input" placeholder="Your Login" />
+                         <span asp-validation-for="UserLogin" style="font-size:15px; font-family:Montserrat" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                         <input type="email" asp-for="Email"  class="form-input" placeholder="Your Email" />
+                         <span asp-validation-for="Email" style="font-size:15px; font-family:Montserrat" class="text-danger"></span>
+                    </div>
+                    <div  class="form-group">
+                         <input type="password" asp-for="UserPassword" class="form-input"  placeholder="Password" />
+                         <span asp-validation-for="UserPassword" style="font-size:15px; font-family:Montserrat" class="text-danger"></span>
+                        <span toggle="#password" class="zmdi zmdi-eye field-icon toggle-password"></span>
+                    </div>
+                    <div class="form-group">
+                         <input type="password" asp-for="UserConfirmPassword" class="form-input" placeholder="Repeat your password" />
+                         <span asp-validation-for="UserConfirmPassword" style="font-size:15px; font-family:Montserrat" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" name="agree-term" id="agree-term" class="agree-term" />
+                        <label for="agree-term" class="label-agree-term"><span><span></span></span>I agree all statements in  <a href="#" class="term-service">Terms of service</a></label>
+                    </div>
+                  
+
+                   
+
+
+                    <div class="form-group">
+                        <button  type="submit" name="submit" id="submit" class="form-submit">Sign up</button>
+                    </div>
+                  <div style="font-size:15px; font-family:Montserrat; text-align:center" class="text-danger">@ViewBag.ErrorText</div>
+                                                 
+              </form>
+
+                <p class="loginhere">
+                    Have already an account ? <a class="loginhere-link" asp-action="Login" id="1">Login here</a>
+                </p>
+            </div>
+        </div>
