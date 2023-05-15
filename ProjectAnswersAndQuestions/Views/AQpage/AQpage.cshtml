@@ -33,7 +33,7 @@
                                 <li><a asp-controller="AQpage" asp-action="AQpage" class="menu__item">Home</a></li>
                                 <li><a asp-controller="AboutPage" asp-action="AboutPage" class="menu__item">About</a></li>
                                 <li><a asp-controller="Contactpage" asp-action="ContactPage" class="menu__item">Contact</a></li>
-                                <li><a asp-controller="AdminPage" asp-action="AdminPage" class="menu__item">For Admin</a></li>
+                               @* <li><a asp-controller="AdminPage" asp-action="AdminPage" class="menu__item">For Admin</a></li>*@
                                 @if (User.Identity.IsAuthenticated && Model.Users.Count() >= 5)
                                 {
                                     @if (Model.AQuser.RoleID == 1)

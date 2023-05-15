@@ -28,7 +28,7 @@ namespace ProjectAnswersAndQuestions.Controllers
             string sqlExpression1 = "SELECT COUNT(*) FROM Users";
             string sqlExpression2 = "SELECT COUNT(*) FROM Comments";
             string sqlExpression3 = "SELECT COUNT(*) FROM Articles";
-            using (SqlConnection connection = new SqlConnection("Server=DESKTOP-CKVJ0S3;Database=AQDB;Persist Security Info=False; MultipleActiveResultSets=True; Trusted_Connection=True; TrustServerCertificate=true"))
+            using (SqlConnection connection = new SqlConnection("Server=DESKTOP-CKVJ0S3\\SQLEXPRESS;Database=AQDB;Persist Security Info=False; MultipleActiveResultSets=True; Trusted_Connection=True; TrustServerCertificate=true"))
             {
                 connection.Open();
                 SqlCommand command1 = new SqlCommand(sqlExpression1, connection);             
