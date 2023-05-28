@@ -17,6 +17,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using System.IO;
+using System.Web.Helpers;
+using ProjectAnswersAndQuestions.Services;
 
 namespace ProjectAnswersAndQuestions.Controllers
 {
@@ -47,7 +49,7 @@ namespace ProjectAnswersAndQuestions.Controllers
                 if (_user != null)
                 {
 
-                    await Authenticate(user.Email);
+                    await Authenticate(user.Email);                 
                     return RedirectToAction("AQpage", "AQpage");
                 }
                 else
@@ -56,6 +58,7 @@ namespace ProjectAnswersAndQuestions.Controllers
                     return View();
                 }
             }
+          
             return View();
         }     
         [HttpGet]
@@ -76,8 +79,7 @@ namespace ProjectAnswersAndQuestions.Controllers
                 }
                 else
                 {
-                    //image image
-                    //user.FileAvatar=
+                    
                     if (user.FileAvatar != null)
                     {
                         byte[] imageData = null;
@@ -90,9 +92,11 @@ namespace ProjectAnswersAndQuestions.Controllers
                         user.Avatar = imageData;
                     }
                     user.RoleID = await roleService.SetRole();
-                    //user.Avatar=
                     await userService.AddUser(user);
                     await Authenticate(user.Email);
+
+                    var verifEmailService = new VerifEmailService();
+                    verifEmailService.SendConfirmationEmail(user);
                     return RedirectToAction("Login", "User");
                 }
             }

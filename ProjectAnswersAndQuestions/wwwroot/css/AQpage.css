@@ -157,7 +157,7 @@ nav {
 
 .form-input:focus {
     border: 1px solid black;
-    color: black;
+    color: white;
 }
 
 .form-inputSearch {
